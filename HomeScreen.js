@@ -8,13 +8,23 @@ import axios from 'axios';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {LocaleConfig} from 'react-native-calendars';
+LocaleConfig.locales['he'] = {
+  monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+  monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
+  dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+  dayNamesShort: ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'],
+  today: 'Aujourd\'hui'
+};
+LocaleConfig.defaultLocale = 'he';
 
 import {StyleSheet, View, Text} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const Tab = createBottomTabNavigator();
 
-function Feed() {
+function Reports() {
   const [date, setDate] = useState(new Date());
 
   const onChange = (event, selectedDate) => {
@@ -26,6 +36,7 @@ function Feed() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text>Date</Text>
+      <Calendar current={Date()} />
     </View>
   );
 }
@@ -49,13 +60,13 @@ function Notifications() {
 function MyTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Feed"
+      initialRouteName="Reports"
       tabBarOptions={{
         activeTintColor: '#e91e63',
       }}>
       <Tab.Screen
-        name="Feed"
-        component={Feed}
+        name="Reports"
+        component={Reports}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({color, size}) => (
