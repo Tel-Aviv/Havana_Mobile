@@ -34,9 +34,9 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import AuthContext from './AuthContext';
 
-import HomeScreen from './HomeScreen';
-import SignInScreen from './SignInScreen';
-import OtpScreen from './src/OtpScreen';
+import HomeScreen from './screens/HomeScreen';
+import SignInScreen from './screens/SignInScreen';
+import OtpScreen from './screens/OtpScreen';
 
 const reducer = (prevState, action) => {
   switch (action.type) {

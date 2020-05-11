@@ -3,7 +3,7 @@ import React, {useState, useContext} from 'react';
 import axios from 'axios';
 import {View, Text, TextInput, Button, StatusBar} from 'react-native';
 
-import AuthContext from './AuthContext';
+import AuthContext from '../AuthContext';
 
 const SignInScreen = ({navigation}) => {
   const [username, setUsername] = useState('olegk');
