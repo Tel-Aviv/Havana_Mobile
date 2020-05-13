@@ -26,7 +26,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-
 import {createStackNavigator} from '@react-navigation/stack';
 const Stack = createStackNavigator();
 
@@ -107,11 +106,11 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator mode="card">
           {userToken ? (
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Reports" component={HomeScreen} />
           ) : (
             <>
               <Stack.Screen
-                name="Sign In"
+                name="SignIn"
                 component={SignInScreen}
                 options={{
                   title: 'Sign in',
