@@ -186,7 +186,7 @@ const HomeScreen = (props) => {
     };
 
     fetchData();
-  });
+  }, []);
 
   return (
     <DataContext.Provider value={reportData}>

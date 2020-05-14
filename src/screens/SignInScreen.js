@@ -25,7 +25,7 @@ import {
 } from 'native-base';
 
 const SignInScreen = ({navigation}) => {
-  const [username, setUsername] = useState('olegk');
+  const [username, setUsername] = useState('c1306948');
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('0543307026');
 
@@ -34,9 +34,10 @@ const SignInScreen = ({navigation}) => {
   const onSignIn = async () => {
     try {
       setLoading(true);
-      await axios(
+      const res = await axios(
         `https://api.tel-aviv.gov.il/auth/api/otp?id=${username}&phoneNum=${phoneNumber}`,
       );
+      console.log(res);
       navigation.navigate('OTP');
       //signIn(username, phoneNumber);
     } catch (error) {
@@ -74,7 +75,7 @@ const SignInScreen = ({navigation}) => {
               </Item>
             </Form>
             <Button block style={{top: 70}} onPress={() => onSignIn()}>
-              <Text style={{color:'white'}}>Sign in</Text>
+              <Text style={{color:'white'}}>Send SMS</Text>
             </Button>
           </>
         )}

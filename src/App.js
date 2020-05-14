@@ -33,6 +33,7 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import AuthContext from './AuthContext';
 
+import ExpandableCalendarScreen from './screens/wix';
 import HomeScreen from './screens/HomeScreen';
 import SignInScreen from './screens/SignInScreen';
 import OtpScreen from './screens/OtpScreen';
@@ -109,6 +110,13 @@ const App = () => {
             <Stack.Screen name="Reports" component={HomeScreen} />
           ) : (
             <>
+              <Stack.Screen
+                name="Wix"
+                component={ExpandableCalendarScreen}
+                options={{
+                  title: 'Wix Calendar',
+                }}
+              />
               <Stack.Screen
                 name="SignIn"
                 component={SignInScreen}

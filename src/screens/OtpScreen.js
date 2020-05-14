@@ -1,14 +1,6 @@
 import React, {useState, useContext} from 'react';
 import axios from 'axios';
-import {
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  TextInput,
-  ActivityIndicator,
-} from 'react-native';
+import {SafeAreaView, StyleSheet, View, Text} from 'react-native';
 import {
   Container,
   Content,
@@ -67,9 +59,24 @@ const OtpScreen = (props) => {
                 />
               </Item>
             </Form>
-            <Button block style={{top: 70}}  onPress={() => onSendOtp()}>
-              <Text style={{color:'white'}}>Send</Text>
-            </Button>
+            <View style={{top: 60}}>
+              <Button block onPress={() => onSendOtp()}>
+                <Text style={{color:'white'}}>Sign In</Text>
+              </Button>
+              <View style={[styles.horizontal, {top: 32}]}>
+                <Text
+                  adjustsFontSizeToFit
+                  style={[styles.textHint, {marginRight: 6}]}>
+                  SMS not arriving?
+                </Text>
+                <Text
+                  style={[styles.link, styles.textHint]}
+                  primary
+                  onPress={() => props.navigation.goBack()}>
+                  <Text>Try again</Text>
+                </Text>
+              </View>
+            </View>
           </>
         )}
       </Content>
@@ -88,11 +95,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginHorizontal: 6,
   },
-  textInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
+  textHint: {
+    fontSize:18,
+  },
+  link: {
+    opacity: 0.9,
+    color: 'blue',
   },
 });
 
