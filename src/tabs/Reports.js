@@ -3,7 +3,9 @@
  * @flow strict-local
  */
 import React, {useState, useEffect, useContext} from 'react';
+import _ from 'lodash';
 import {
+  Platform,
   Alert,
   StyleSheet,
   View,
@@ -11,236 +13,326 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Text} from 'native-base';
 
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import {LocaleConfig} from 'react-native-calendars';
-LocaleConfig.locales['he'] = {
-  monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
-  monthNamesShort: ['Янв.','Фев.','Март','Апр','Май','Июнь','Июль','Авг.','Сен.','Окт.','Ноябрь.','Дек.'],
-  dayNames: ['Воскресенье','понедельник','вторник','среда','Четверг','пятница','суббота'],
-  dayNamesShort: ['Вскр.','Пнд.','Вт.','Ср.','Чт.','Пт.','Суб.'],
+LocaleConfig.locales['ru'] = {
+  monthNames: [
+    'Январь',
+    'Февраль',
+    'Март',
+    'Апрель',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Август',
+    'Сентябрь',
+    'Октябрь',
+    'Ноябрь',
+    'Декабрь',
+  ],
+  monthNamesShort: [
+    'Янв.',
+    'Фев.',
+    'Март',
+    'Апр',
+    'Май',
+    'Июнь',
+    'Июль',
+    'Авг.',
+    'Сен.',
+    'Окт.',
+    'Ноябрь.',
+    'Дек.',
+  ],
+  dayNames: [
+    'Воскресенье',
+    'понедельник',
+    'вторник',
+    'среда',
+    'Четверг',
+    'пятница',
+    'суббота',
+  ],
+  dayNamesShort: ['Вс.', 'Пон.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Суб.'],
   today: 'Сегодня',
 };
-LocaleConfig.defaultLocale = 'he';
+LocaleConfig.defaultLocale = 'ru';
+
+import {
+  ExpandableCalendar,
+  AgendaList,
+  CalendarProvider,
+} from 'react-native-calendars';
 
 import DataContext from '../DataContext';
 
-function Separator() {
-  return <View style={styles.separator} />;
+const today = new Date().toISOString().split('T')[0];
+const fastDate = getPastDate(3);
+const futureDates = getFutureDates(9);
+const dates = [fastDate, today].concat(futureDates);
+const themeColor = '#00AAAF';
+const lightThemeColor = '#EBF9F9';
+
+function getFutureDates(days) {
+  const array = [];
+  for (let index = 1; index <= days; index++) {
+    const date = new Date(Date.now() + 864e5 * index); // 864e5 == 86400000 == 24*60*60*1000
+    const dateString = date.toISOString().split('T')[0];
+    array.push(dateString);
+  }
+  return array;
 }
 
-const vacation = {key:'vacation', color: 'red', selectedDotColor: 'blue'};
-const massage = {key:'massage', color: 'blue', selectedDotColor: 'blue'};
-const workOff = {key: 'daysoff', color: 'green'};
+function getPastDate(days) {
+  return new Date(Date.now() - 864e5 * days).toISOString().split('T')[0];
+}
+
+const ITEMS = [
+  {
+    title: dates[0],
+    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
+  },
+  {
+    title: dates[1],
+    data: [
+      {hour: '4pm', duration: '1h', title: 'Entry'},
+      {hour: '5pm', duration: '1h', title: 'Exit'},
+    ],
+  },
+  {
+    title: dates[2],
+    data: [
+      {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
+      {hour: '2pm', duration: '1h', title: 'Deep Streches'},
+      {hour: '3pm', duration: '1h', title: 'Private Yoga'},
+    ],
+  },
+  {
+    title: dates[3],
+    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
+  },
+  {title: dates[4], data: [{}]},
+  {
+    title: dates[5],
+    data: [
+      {hour: '9pm', duration: '1h', title: 'Pilates Reformer'},
+      {hour: '10pm', duration: '1h', title: 'Ashtanga'},
+      {hour: '11pm', duration: '1h', title: 'TRX'},
+      {hour: '12pm', duration: '1h', title: 'Running Group'},
+    ],
+  },
+  {
+    title: dates[6],
+    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
+  },
+  {title: dates[7], data: [{}]},
+  {
+    title: dates[8],
+    data: [
+      {hour: '9pm', duration: '1h', title: 'Pilates Reformer'},
+      {hour: '10pm', duration: '1h', title: 'Ashtanga'},
+      {hour: '11pm', duration: '1h', title: 'TRX'},
+      {hour: '12pm', duration: '1h', title: 'Running Group'},
+    ],
+  },
+  {
+    title: dates[9],
+    data: [
+      {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
+      {hour: '2pm', duration: '1h', title: 'Deep Streches'},
+      {hour: '3pm', duration: '1h', title: 'Private Yoga'},
+    ],
+  },
+  {
+    title: dates[10],
+    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
+  },
+];
 
 const Reports = ({route, navigation}) => {
-  const [date, setDate] = useState(new Date());
-  const [showAgenda, setShowAgenda] = useState(false);
+  // const [date, setDate] = useState(new Date());
+  // const [showAgenda, setShowAgenda] = useState(false);
 
   const {reportData, daysOff} = useContext(DataContext);
   console.log(reportData);
   console.log(daysOff);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    // setShow(Platform.OS === 'ios');
-    setDate(currentDate);
+  const getTheme = () => {
+    const disabledColor = 'grey';
+
+    return {
+      // arrows
+      arrowColor: 'black',
+      arrowStyle: {padding: 0},
+      // month
+      monthTextColor: 'black',
+      textMonthFontSize: 16,
+      textMonthFontFamily: 'HelveticaNeue',
+      textMonthFontWeight: 'bold',
+      // day names
+      textSectionTitleColor: 'black',
+      textDayHeaderFontSize: 12,
+      textDayHeaderFontFamily: 'HelveticaNeue',
+      textDayHeaderFontWeight: 'normal',
+      // dates
+      dayTextColor: themeColor,
+      textDayFontSize: 18,
+      textDayFontFamily: 'HelveticaNeue',
+      textDayFontWeight: '500',
+      textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
+      // selected date
+      selectedDayBackgroundColor: themeColor,
+      selectedDayTextColor: 'white',
+      // disabled date
+      textDisabledColor: disabledColor,
+      // dot (marked date)
+      dotColor: themeColor,
+      selectedDotColor: 'white',
+      disabledDotColor: disabledColor,
+      dotStyle: {marginTop: -2},
+    };
   };
 
-  const onDayPress = (day) => {
-    console.log('selected day', day);
-    setShowAgenda(true);
+  const onDateChanged = (/* date, updateSource */) => {
+    // console.warn('ExpandableCalendarScreen onDateChanged: ', date, updateSource);
+    // fetch and set data for date + week ahead
   };
 
-  const renderAgendaItem = (item, firstItemInDay) => {
+  const onMonthChange = (/* month, updateSource */) => {
+    // console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
+  };
+
+  const buttonPressed = () => {
+    Alert.alert('show more');
+  };
+
+  const itemPressed = (id) => {
+    Alert.alert(id);
+  };
+
+  const renderEmptyItem = () => {
+    return (
+      <View style={styles.emptyItem}>
+        <Text style={styles.emptyItemText}>No Events Planned</Text>
+      </View>
+    );
+  };
+
+  const renderItem = ({item}) => {
+    if (_.isEmpty(item)) {
+      return renderEmptyItem();
+    }
+
     return (
       <TouchableOpacity
-        style={[styles.agendaItem, {height: item.height}]}
-        onPress={() => Alert.alert(item.name)}>
-        <Text>{item.name}</Text>
+        onPress={() => itemPressed(item.title)}
+        style={styles.item}>
+        <View>
+          <Text style={styles.itemHourText}>{item.hour}</Text>
+          <Text style={styles.itemDurationText}>{item.duration}</Text>
+        </View>
+        <Text style={styles.itemTitleText}>{item.title}</Text>
+        <View style={styles.itemButtonContainer}>
+          <Button color={'grey'} title={'Info'} onPress={buttonPressed} />
+        </View>
       </TouchableOpacity>
     );
   };
 
-  const onCalendarToggled = (calendarOpened) => {
-    console.log(calendarOpened);
-  };
-
-  const renderEmptyDate = () => {
-    return (
-      <View style={styles.emptyDate}>
-        <Text>This is empty date!</Text>
-      </View>
-    );
+  const getMarkedDates = () => {
+    const marked = {};
+    ITEMS.forEach((item) => {
+      // NOTE: only mark dates with data
+      if (item.data && item.data.length > 0 && !_.isEmpty(item.data[0])) {
+        marked[item.title] = {marked: true};
+      }
+    });
+    return marked;
   };
 
   return (
-    <SafeAreaView style={[styles.container, {top: 22}]}>
-      <View style={{flex:0.1}}>
-        <View style={styles.horizontal}>
-          <Button title="Submit" disabled />
-          <Button title="Check" />
-        </View>
-        <Separator />
-      </View>
-      <View style={{flex: 0.9}}>
-        {showAgenda ? (
-          <View style={{flex:1}}>
-            <Agenda
-              theme={{agendaKnobColor: 'gray'}}
-              // The list of items that have to be displayed in agenda. If you want to render item as empty date
-              // the value of date key has to be an empty array []. If there exists no value for date key it is
-              // considered that the date in question is not yet loaded
-              items={{
-                '2020-05-12': [{name: 'item 1 - any js object'}],
-                '2020-05-13': [{name: 'item 2 - any js object', height: 80}],
-                '2020-05-15': [],
-                '2020-05-16': [
-                  {name: 'item 3 - any js object'},
-                  {name: 'any js object'},
-                ],
-              }}
-              // Callback that gets called when items for a certain month should be loaded (month became visible)
-              loadItemsForMonth={(month) => {console.log('trigger items loading')}}
-              // Callback that fires when the calendar is opened or closed
-              onCalendarToggled={onCalendarToggled}
-              // Callback that gets called on day press
-              onDayPress={(day)=>{console.log('day pressed')}}
-              // Callback that gets called when day changes while scrolling agenda list
-              onDayChange={(day)=>{console.log('day changed')}}
-              // Initially selected day
-              selected={'2020-05-16'}
-              // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-              minDate={'2020-05-01'}
-              // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-              maxDate={'2020-05-30'}
-              // Max amount of months allowed to scroll to the past. Default = 50
-              pastScrollRange={2}
-              // Max amount of months allowed to scroll to the future. Default = 50
-              futureScrollRange={2}
-              // Specify how each item should be rendered in agenda
-              renderItem={renderAgendaItem}
-              // Specify how each date should be rendered. day can be undefined if the item is not first in that day.
-              renderDay={(day, item) => {return (<View />);}}
-              // Specify how empty date content with no items should be rendered
-              renderEmptyDate={renderEmptyDate}
-              // Specify how agenda knob should look like
-              //renderKnob={renderKnob}
-              // Specify what should be rendered instead of ActivityIndicator
-              renderEmptyData = {() => {return (<View />);}}
-              // Specify your item comparison function for increased performance
-              rowHasChanged={(r1, r2) => {return r1.text !== r2.text}}
-              // Hide knob button. Default = false
-              hideKnob={false}
-              // By default, agenda dates are marked if they have at least one item, but you can override this if needed
-              markedDates={{
-                '2020-05-11': {selected: true, marked: true},
-                '2020-05-15': {marked: true},
-                '2020-05-14': {disabled: true},
-              }}
-              // If disabledByDefault={true} dates flagged as not disabled will be enabled. Default = false
-              disabledByDefault={true}
-              // If provided, a standard RefreshControl will be added for "Pull to Refresh" functionality. Make sure to also set the refreshing prop correctly.
-              onRefresh={() => console.log('refreshing...')}
-              // Set this true while waiting for new data from a refresh
-              refreshing={false}
-              // Add a custom RefreshControl component, used to provide pull-to-refresh functionality for the ScrollView.
-              refreshControl={null}
-              // Agenda container style
-              style={{}}
-            />
-            <Button title="Close" />
-          </View>
-        ) : (
-          <Calendar
-            current={Date()}
-            onDayPress={onDayPress}
-            pagingEnabled={false}
-            markingType={'multi-dot'}
-            markedDates={{
-              '2020-05-01': {
-                selected: true,
-                marked: true,
-                selectedColor: 'blue',
-              },
-              '2020-05-02': {marked: true},
-              '2020-05-03': {
-                dots: [vacation, massage, workOff],
-              },
-              '2020-05-25': {disabled: true, disableTouchEvent: true},
-            }}
-          />
-        )}
-      </View>
-    </SafeAreaView>
+    <CalendarProvider
+      date={ITEMS[0].title}
+      onDateChanged={onDateChanged}
+      onMonthChange={onMonthChange}
+      showTodayButton
+      disabledOpacity={0.6}
+      // theme={{
+      //   todayButtonTextColor: themeColor
+      // }}
+      // todayBottomMargin={16}
+    >
+      <ExpandableCalendar
+        horizontal={true}
+        // hideArrows
+        // disablePan
+        // hideKnob
+        // initialPosition={ExpandableCalendar.positions.OPEN}
+        calendarStyle={styles.calendar}
+        headerStyle={styles.calendar} // for horizontal only
+        // disableWeekScroll
+        theme={getTheme()}
+        firstDay={0}
+        markedDates={getMarkedDates()} // {'2019-06-01': {marked: true}, '2019-06-02': {marked: true}, '2019-06-03': {marked: true}};
+        leftArrowImageSource={require('../img/previous.png')}
+        rightArrowImageSource={require('../img/next.png')}
+      />
+      <AgendaList
+        sections={ITEMS}
+        renderItem={renderItem}
+        // sectionStyle={styles.section}
+      />
+    </CalendarProvider>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 0,
-    marginHorizontal: 14,
+  calendar: {
+    paddingLeft: 20,
+    paddingRight: 20,
   },
-  title: {
-    textAlign: 'center',
-    marginVertical: 8,
+  section: {
+    backgroundColor: lightThemeColor,
+    color: 'grey',
+    textTransform: 'capitalize',
   },
-  horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  separator: {
-    marginVertical: 8,
-    borderBottomColor: '#737373',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  agendaItem: {
+  item: {
+    padding: 20,
     backgroundColor: 'white',
-    flex: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 17,
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgrey',
+    flexDirection: 'row',
   },
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  itemHourText: {
+    color: 'black',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
+  itemDurationText: {
+    color: 'grey',
     fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  itemTitleText: {
+    color: 'black',
+    marginLeft: 16,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  itemButtonContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  emptyItem: {
+    paddingLeft: 20,
+    height: 52,
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgrey',
+  },
+  emptyItemText: {
+    color: 'lightgrey',
+    fontSize: 14,
   },
 });
 

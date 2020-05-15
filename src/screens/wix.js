@@ -156,21 +156,21 @@ export default class ExpandableCalendarScreen extends Component {
         // }} 
         // todayBottomMargin={16}
       > 
-        { false ? // this.props.weekView ? 
+        { this.props.weekView ? 
           <WeekCalendar
             firstDay={1}
             markedDates={this.getMarkedDates()}
           /> :
           <ExpandableCalendar
-            // horizontal={false}
+            horizontal={true}
             // hideArrows
             // disablePan
             // hideKnob
             // initialPosition={ExpandableCalendar.positions.OPEN}
-            // calendarStyle={styles.calendar}
-            // headerStyle={styles.calendar} // for horizontal only
+            calendarStyle={styles.calendar}
+            headerStyle={styles.calendar} // for horizontal only
             // disableWeekScroll
-            // theme={this.getTheme()}
+            theme={this.getTheme()}
             firstDay={1}
             markedDates={this.getMarkedDates()} // {'2019-06-01': {marked: true}, '2019-06-02': {marked: true}, '2019-06-03': {marked: true}};
             leftArrowImageSource={require('../img/previous.png')}
@@ -181,7 +181,7 @@ export default class ExpandableCalendarScreen extends Component {
           sections={ITEMS}
           extraData={this.state}
           renderItem={this.renderItem}
-          // sectionStyle={styles.section}
+        //   sectionStyle={styles.section}
         />
       </CalendarProvider>
     );

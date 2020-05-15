@@ -110,13 +110,13 @@ const App = () => {
             <Stack.Screen name="Reports" component={HomeScreen} />
           ) : (
             <>
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="Wix"
                 component={ExpandableCalendarScreen}
                 options={{
                   title: 'Wix Calendar',
                 }}
-              />
+              /> */}
               <Stack.Screen
                 name="SignIn"
                 component={SignInScreen}

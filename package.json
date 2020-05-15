@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "ios-prod": "react-native run-ios --configuration Release --device \"Oleg Kleiman’s iPhone\"",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
