@@ -33,7 +33,6 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import AuthContext from './AuthContext';
 
-import ExpandableCalendarScreen from './screens/wix';
 import HomeScreen from './screens/HomeScreen';
 import SignInScreen from './screens/SignInScreen';
 import OtpScreen from './screens/OtpScreen';
@@ -75,6 +74,7 @@ const App = () => {
         );
 
         AsyncStorage.setItem('userToken', accessToken);
+        AsyncStorage.setItem('refreshToken', refreshToken);
         setUserToken(accessToken);
 
         dispatch({
@@ -90,10 +90,11 @@ const App = () => {
 
   useEffect(() => {
     const bootstrapAsync = async () => {
-      let userToken;
+      let _userToken;
 
       try {
-        userToken = await AsyncStorage.getItem('userToken');
+        _userToken = await AsyncStorage.getItem('userToken');
+        console.log(_userToken);
       } catch (e) {
         // Restoring token failed
       }
@@ -106,33 +107,29 @@ const App = () => {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         <Stack.Navigator mode="card">
-          {userToken ? (
-            <Stack.Screen name="Reports" component={HomeScreen} />
-          ) : (
-            <>
-              {/* <Stack.Screen
-                name="Wix"
-                component={ExpandableCalendarScreen}
-                options={{
-                  title: 'Wix Calendar',
-                }}
-              /> */}
-              <Stack.Screen
-                name="SignIn"
-                component={SignInScreen}
-                options={{
-                  title: 'Sign in',
-                }}
-              />
-              <Stack.Screen
-                name="OTP"
-                component={OtpScreen}
-                options={{
-                  title: 'OTP',
-                }}
-              />
-            </>
-          )}
+          <>
+            <Stack.Screen
+              name="SignIn"
+              component={SignInScreen}
+              options={{
+                title: 'Sign in',
+              }}
+            />
+            <Stack.Screen
+              name="OTP"
+              component={OtpScreen}
+              options={{
+                title: 'OTP',
+              }}
+            />
+            <Stack.Screen
+              name="My Office"
+              component={HomeScreen}
+              options={{
+                headerLeft: () => null,
+              }}
+            />
+          </>
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>

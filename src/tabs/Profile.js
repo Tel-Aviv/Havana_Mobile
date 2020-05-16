@@ -2,29 +2,35 @@
  * @format
  * @flow strict-local
  */
-import React, {useEffect,useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
-import {SafeAreaView, StyleSheet, Button, View, Text} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import {Spinner} from 'native-base';
+import {View, TextInput, Text, Button} from 'react-native-ui-lib';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import AuthContext from '../AuthContext';
 
-const Profile = ({route, navigation}) => {
+const Profile = (props) => {
+  const [userName, setUserName] = useState();
+
   const {signOut} = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const accessToken = await AsyncStorage.getItem('userToken');
+        console.log(accessToken);
 
-        const resp = await axios('https://api.tel-aviv.gov.il/me', {
+        const resp = await axios('https://api.tel-aviv.gov.il/ps/me', {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
         console.log(resp.data);
+        setUserName(resp.data.userName);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -34,15 +40,28 @@ const Profile = ({route, navigation}) => {
   const onLogout = () => {
     AsyncStorage.setItem('userToken', null);
     signOut();
-    navigation.navigate('SignIn');
+    props.navigation.navigate('SignIn');
   };
 
   return (
-    <SafeAreaView style={[styles.container, {top: 22}]}>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Button title="Logout" onPress={() => onLogout()} />
+    <View flex paddingH-25 paddingT-120>
+      {userName ? (
+        <Text blue30 center>
+          {userName}
+        </Text>
+      ) : (
+        <Spinner />
+      )}
+      <View marginT-100 center>
+        <Button
+          text70
+          white
+          background-orange30
+          label="Logout"
+          onPress={() => onLogout()}
+        />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

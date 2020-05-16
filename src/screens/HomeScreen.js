@@ -17,14 +17,7 @@ import DataContext from '../DataContext';
 const Tab = createBottomTabNavigator();
 
 const MyTabs = (props) => {
-  // props.navigation.setParams(
-  //   {
-  //     data: {
-  //       day1: 'ok',
-  //     },
-  //   },
-  //   'Reports',
-  // );
+
   return (
     <Tab.Navigator
       initialRouteName="Reports"
@@ -98,6 +91,10 @@ const HomeScreen = (props) => {
     const fetchData = async () => {
       try {
         const accessToken = await AsyncStorage.getItem('userToken');
+        if (!accessToken) {
+          props.navigation.navigate('SignIn');
+          return;
+        }
 
         const now = new Date();
         const year = now.getFullYear();

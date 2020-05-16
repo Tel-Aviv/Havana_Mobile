@@ -7,8 +7,6 @@ import axios from 'axios';
 import {
   StyleSheet,
   SafeAreaView,
-  View,
-  Text,
   TextInput,
   ActivityIndicator,
   useColorScheme
@@ -20,9 +18,9 @@ import {
   Item,
   Input,
   Label,
-  Button,
   Spinner,
 } from 'native-base';
+import {Button, Text, View} from 'react-native-ui-lib';
 
 const SignInScreen = ({navigation}) => {
   const [username, setUsername] = useState('c1306948');
@@ -55,6 +53,7 @@ const SignInScreen = ({navigation}) => {
         ) : (
           <>
             <Form>
+              <Text blue50 text20>Welcome</Text>
               <Item floatingLabel>
                 <Label>Username</Label>
                 <Input
@@ -74,9 +73,16 @@ const SignInScreen = ({navigation}) => {
                 />
               </Item>
             </Form>
-            <Button block style={{top: 70}} onPress={() => onSignIn()}>
-              <Text style={{color:'white'}}>Send SMS</Text>
-            </Button>
+            <View marginT-100 center>
+              <Button
+                text70
+                white
+                background-blue30
+                label="Send SMS"
+                style={{top: 70}}
+                onPress={() => onSignIn()}
+              />
+            </View>
           </>
         )}
       </Content>

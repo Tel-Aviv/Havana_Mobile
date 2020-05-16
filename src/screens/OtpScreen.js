@@ -1,6 +1,8 @@
 import React, {useState, useContext} from 'react';
 import axios from 'axios';
-import {SafeAreaView, StyleSheet, View, Text} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
+
+import {Button, Text, View} from 'react-native-ui-lib';
 import {
   Container,
   Content,
@@ -8,7 +10,6 @@ import {
   Item,
   Input,
   Label,
-  Button,
   Spinner,
 } from 'native-base';
 
@@ -20,7 +21,6 @@ const OtpScreen = (props) => {
   const {signIn} = useContext(AuthContext);
 
   const onSendOtp = async () => {
-    console.log(otp);
     try {
       setLoading(true);
       const res = await axios.post(
@@ -35,6 +35,8 @@ const OtpScreen = (props) => {
       );
       const {access_token, token_type, expires_in, refresh_token} = res.data;
       signIn(access_token, token_type, expires_in, refresh_token);
+
+      props.navigation.push('My Office');
     } catch (error) {
       console.error(error);
     } finally {
@@ -59,10 +61,16 @@ const OtpScreen = (props) => {
                 />
               </Item>
             </Form>
-            <View style={{top: 60}}>
-              <Button block onPress={() => onSendOtp()}>
-                <Text style={{color:'white'}}>Sign In</Text>
-              </Button>
+            <View>
+              <View marginT-100 center>
+                <Button
+                  text70
+                  white
+                  background-blue30
+                  label="Sign In"
+                  onPress={() => onSendOtp()}
+                />
+              </View>
               <View style={[styles.horizontal, {top: 32}]}>
                 <Text
                   adjustsFontSizeToFit
