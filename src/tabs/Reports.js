@@ -4,6 +4,7 @@
  */
 import React, {useState, useEffect, useContext} from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 import {
   Platform,
   Alert,
@@ -16,48 +17,48 @@ import {
 import {Text} from 'native-base';
 
 import {LocaleConfig} from 'react-native-calendars';
-LocaleConfig.locales['ru'] = {
+LocaleConfig.locales['en'] = {
   monthNames: [
-    'Январь',
-    'Февраль',
-    'Март',
-    'Апрель',
-    'Май',
-    'Июнь',
-    'Июль',
-    'Август',
-    'Сентябрь',
-    'Октябрь',
-    'Ноябрь',
-    'Декабрь',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'Juny',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ],
   monthNamesShort: [
-    'Янв.',
-    'Фев.',
-    'Март',
-    'Апр',
-    'Май',
-    'Июнь',
-    'Июль',
-    'Авг.',
-    'Сен.',
-    'Окт.',
-    'Ноябрь.',
-    'Дек.',
+    'Jan.',
+    'Feb.',
+    'Mar.',
+    'Apr.',
+    'May',
+    'Jun.',
+    'Jul.',
+    'Aug.',
+    'Sep.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
   ],
   dayNames: [
-    'Воскресенье',
-    'понедельник',
-    'вторник',
-    'среда',
-    'Четверг',
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
     'пятница',
     'суббота',
   ],
-  dayNamesShort: ['Вс.', 'Пон.', 'Вт.', 'Ср.', 'Чт.', 'Пт.', 'Суб.'],
-  today: 'Сегодня',
+  dayNamesShort: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'],
+  today: 'Today',
 };
-LocaleConfig.defaultLocale = 'ru';
+LocaleConfig.defaultLocale = 'en';
 
 import {
   ExpandableCalendar,
@@ -91,7 +92,8 @@ function getPastDate(days) {
 const ITEMS = [
   {
     title: dates[0],
-    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
+    // data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
+    data: [],
   },
   {
     title: dates[1],
@@ -152,11 +154,19 @@ const ITEMS = [
 
 const Reports = ({route, navigation}) => {
   // const [date, setDate] = useState(new Date());
-  // const [showAgenda, setShowAgenda] = useState(false);
+  const [monthlyReportData, setMonthlyReportData] = useState([]);
 
   const {reportData, daysOff} = useContext(DataContext);
   console.log(reportData);
   console.log(daysOff);
+
+  useEffect(() => {
+    const _data = reportData.map((item) => ({
+      title: moment(item.rdate).format('YYYY-MM-DD'),
+      data: [{hour: item.entry, duration: item.total, title: item.notes}],
+    }));
+    setMonthlyReportData(_data);
+  }, [reportData]);
 
   const getTheme = () => {
     const disabledColor = 'grey';
@@ -242,11 +252,25 @@ const Reports = ({route, navigation}) => {
 
   const getMarkedDates = () => {
     const marked = {};
-    ITEMS.forEach((item) => {
-      // NOTE: only mark dates with data
+    // ITEMS.forEach((item) => {
+    //   // NOTE: only mark dates with data
+    //   if (item.data && item.data.length > 0 && !_.isEmpty(item.data[0])) {
+    //     marked[item.title] = {marked: true, dotColor: 'red', disabled: true};
+    //   }
+    // });
+    monthlyReportData.forEach((item) => {
       if (item.data && item.data.length > 0 && !_.isEmpty(item.data[0])) {
-        marked[item.title] = {marked: true};
+        marked[item.title] = {marked: true, dotColor: 'green'};
       }
+    });
+    monthlyReportData.forEach((item) => {
+      marked[item.title] = item.isWorkingDay
+        ? {disabled: false}
+        : {marked: true, disabled: true};
+    });
+    daysOff.forEach((item) => {
+      const propName = moment(item).format('YYYY-MM-DD');
+      marked[propName] = {marked: true, dotColor: 'grey', disabled: true};
     });
     return marked;
   };
@@ -269,6 +293,7 @@ const Reports = ({route, navigation}) => {
         // disablePan
         // hideKnob
         // initialPosition={ExpandableCalendar.positions.OPEN}
+        displayLoadingIndicator
         calendarStyle={styles.calendar}
         headerStyle={styles.calendar} // for horizontal only
         // disableWeekScroll
