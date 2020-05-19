@@ -19,18 +19,22 @@
     "@react-navigation/bottom-tabs": "^5.3.3",
     "@react-navigation/native": "^5.2.3",
     "@react-navigation/stack": "^5.2.18",
+    "add": "^2.0.6",
     "axios": "^0.19.2",
     "moment": "^2.25.3",
     "native-base": "^2.13.12",
     "react": "16.11.0",
     "react-native": "0.62.2",
+    "react-native-background-fetch": "^3.0.5",
+    "react-native-background-geolocation": "^3.6.2",
     "react-native-calendars": "^1.265.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^1.0.0",
     "react-native-screens": "^2.7.0",
     "react-native-ui-lib": "^5.7.2",
-    "react-native-vector-icons": "^6.6.0"
+    "react-native-vector-icons": "^6.6.0",
+    "yarn": "^1.22.4"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

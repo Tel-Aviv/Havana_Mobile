@@ -18,13 +18,14 @@ import {
   ScrollView,
   View,
   Text,
+  Alert,
   StatusBar,
 } from 'react-native';
 
 import axios from 'axios';
-
+import BackgroundGeolocation from 'react-native-background-geolocation';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 const Stack = createStackNavigator();
@@ -103,6 +104,59 @@ const App = () => {
     bootstrapAsync();
   }, []);
 
+  useEffect(() => {
+    const setupGeoFences = async () => {
+      try {
+        BackgroundGeolocation.onLocation(onLocation, onError);
+        BackgroundGeolocation.onMotionChange(onMotionChange);
+        BackgroundGeolocation.onProviderChange(onProviderChange);
+        BackgroundGeolocation.addGeofence({
+          identifier: 'Office',
+          radius: 200,
+          latitude: 32.084136,
+          longitude: 34.782755,
+          notifyOnEntry: true,
+          notifyOnExit: true,
+        });
+        BackgroundGeolocation.onGeofence(onGeoFence);
+        const locationState = await BackgroundGeolocation.ready({
+          desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+          logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+          locationAuthorizationRequest: 'Always',
+          geofenceModeHighAccuracy: true,
+        });
+        console.log('- BackgroundGeolocation is ready: ', locationState);
+        if (locationState.enabled) {
+          // engage geofences-only mode:
+          BackgroundGeolocation.startGeofences();
+          // BackgroundGeolocation.start(() => {
+          //   console.log('- Start success');
+          // });
+        }
+      } catch (error) {
+        console.log('- BackgroundGeolocation error: ', error);
+      }
+    };
+
+    setupGeoFences();
+  });
+
+  const onLocation = (location) => {
+    console.log('[location] - ', location);
+  };
+  const onMotionChange = (event) => {
+    console.log('[motionchange] - ', event);
+  };
+  const onProviderChange = (event) => {
+    console.log('[providerchange] - ', event.enabled, event.status);
+  };
+  const onError = (error) => {
+    console.warn('[location] ERROR -', error);
+  };
+  const onGeoFence = (geofence) => {
+    console.log('[geofence] ', geofence.identifier, geofence.action);
+  };
+
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
@@ -127,6 +181,24 @@ const App = () => {
               component={HomeScreen}
               options={{
                 headerLeft: () => null,
+                headerRight: () => (
+                  <View style={styles.horizontal}>
+                    <Icon
+                      name="ios-checkmark-circle-outline"
+                      size={24}
+                      color={'red'}
+                      style={styles.rightBandItem}
+                      onPress={() => Alert.alert('check')}
+                    />
+                    <Icon
+                      name="ios-send"
+                      size={24}
+                      color={'red'}
+                      style={styles.rightBandItem}
+                      onPress={() => Alert.alert('send')}
+                    />
+                  </View>
+                ),
               }}
             />
           </>
@@ -139,6 +211,15 @@ const App = () => {
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
+  },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginHorizontal: 6,
+  },
+  rightBandItem: {
+    marginRight: 18,
   },
   engine: {
     position: 'absolute',

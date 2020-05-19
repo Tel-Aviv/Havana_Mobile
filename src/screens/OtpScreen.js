@@ -29,7 +29,7 @@ const OtpScreen = (props) => {
         {
           headers: {
             'content-type': 'application/json;charset=UTF-8',
-            'Ocp-Apim-Subscription-Key': '7699269b2d6a40348a26387744f61f39',
+            'Ocp-Apim-Subscription-Key': 'CA81D4A1-F084-406C-AC9D-C0B897EB2AE9',
           },
         },
       );

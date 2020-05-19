@@ -34,6 +34,12 @@ const SignInScreen = ({navigation}) => {
       setLoading(true);
       const res = await axios(
         `https://api.tel-aviv.gov.il/auth/api/otp?id=${username}&phoneNum=${phoneNumber}`,
+        {
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'Ocp-Apim-Subscription-Key': 'CA81D4A1-F084-406C-AC9D-C0B897EB2AE9',
+          },
+        },
       );
       console.log(res);
       navigation.navigate('OTP');
@@ -47,13 +53,15 @@ const SignInScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Content>
+      <Container>
         {loading ? (
           <Spinner size="large" color="#0000ff" />
         ) : (
           <>
             <Form>
-              <Text blue50 text20>Welcome</Text>
+              <Text blue50 text20 style={styles.title}>
+                Welcome
+              </Text>
               <Item floatingLabel>
                 <Label>Username</Label>
                 <Input
@@ -73,19 +81,19 @@ const SignInScreen = ({navigation}) => {
                 />
               </Item>
             </Form>
-            <View marginT-100 center>
+            <View center>
               <Button
                 text70
                 white
                 background-blue30
                 label="Send SMS"
-                style={{top: 70}}
+                style={{top: 20}}
                 onPress={() => onSignIn()}
               />
             </View>
           </>
         )}
-      </Content>
+      </Container>
     </SafeAreaView>
   );
 };
@@ -93,14 +101,15 @@ const SignInScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 0,
-    marginHorizontal: 14,
   },
-  horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    // paddingHorizontal: 14,
+    marginHorizontal: 0,
+  },
+  title: {
+    paddingHorizontal: 14,
   },
   textInput: {
     height: 40,

@@ -10,14 +10,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import Reports from '../tabs/Reports';
 import Profile from '../tabs/Profile';
-import Notifications from '../tabs/Notifications';
+import NotificationsTab from '../tabs/NotificationsTab';
 
 import DataContext from '../DataContext';
 
 const Tab = createBottomTabNavigator();
 
 const MyTabs = (props) => {
-
   return (
     <Tab.Navigator
       initialRouteName="Reports"
@@ -37,7 +36,7 @@ const MyTabs = (props) => {
       />
       <Tab.Screen
         name="Notifications"
-        component={Notifications}
+        component={NotificationsTab}
         options={{
           tabBarLabel: 'Notifications',
           tabBarIcon: ({color, size}) => (
