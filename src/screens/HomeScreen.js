@@ -1,6 +1,5 @@
 /**
  * @format
- * @flow strict-local
  */
 import React, {useState, useEffect, useReducer} from 'react';
 import axios from 'axios';
@@ -38,7 +37,7 @@ const MyTabs = (props) => {
         name="Notifications"
         component={NotificationsTab}
         options={{
-          tabBarLabel: 'Notifications',
+          tabBarLabel: 'Inbox',
           tabBarIcon: ({color, size}) => (
             <Icon name="ios-notifications" color={color} size={size} />
           ),
@@ -72,6 +71,12 @@ const dataReducer = (prevState, action) => {
         daysOff: action.data,
       };
 
+    case 'SET_MANUAL_UPDATES':
+      return {
+        ...prevState,
+        manualUpdates: action.data,
+      };
+
     default:
       return {
         ...prevState,
@@ -83,6 +88,7 @@ const HomeScreen = (props) => {
   const initialState = {
     reportData: [],
     daysOff: [],
+    manualUpdates: [],
   };
   const [reportData, dispatch] = useReducer(dataReducer, initialState);
 
@@ -104,9 +110,22 @@ const HomeScreen = (props) => {
         let respArr = await axios.all([
           axios(
             `https://api.tel-aviv.gov.il/ps/daysoff?year=${year}&month=${month}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            },
           ),
           axios(
             `https://api.tel-aviv.gov.il/ps/me/reports/status?month=${month}&year=${year}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            },
+          ),
+          axios(
+            `https://api.tel-aviv.gov.il/ps/me/manual_updates?year=${year}&month=${month}`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -118,6 +137,9 @@ const HomeScreen = (props) => {
           (item) => new Date(Date.parse(item.date)),
         );
         dispatch({type: 'SET_DAYS_OFF', data: data});
+
+        data = respArr[2].data.items;
+        dispatch({type: 'SET_MANUAL_UPDATES', data: data});
 
         let reportId = 0;
 

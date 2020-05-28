@@ -19,6 +19,7 @@
 		582A5B5A8ECA333753EDBB1C /* libPods-Havana_Mobile-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 962AE053E2FAFDF46EC61169 /* libPods-Havana_Mobile-tvOS.a */; };
 		BA66666400D952F265E1A8C7 /* libPods-Havana_Mobile-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CF89ACDBB16301328ADBDDB0 /* libPods-Havana_Mobile-tvOSTests.a */; };
 		D786876E8760F54D267752BD /* libPods-Havana_Mobile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2EE106AB4466DD509F2301 /* libPods-Havana_Mobile.a */; };
+		DC3085CF2475E055005BBC22 /* TLV Office walk.gpx in Resources */ = {isa = PBXBuildFile; fileRef = DC3085CE2475E055005BBC22 /* TLV Office walk.gpx */; };
 		EAFA01D14C4ABDF83DFA68E4 /* libPods-Havana_Mobile-Havana_MobileTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D401F1FF77112C9F777C618 /* libPods-Havana_Mobile-Havana_MobileTests.a */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +64,7 @@
 		BE48A63706C8ED1F06152302 /* Pods-Havana_Mobile.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Havana_Mobile.debug.xcconfig"; path = "Target Support Files/Pods-Havana_Mobile/Pods-Havana_Mobile.debug.xcconfig"; sourceTree = "<group>"; };
 		CF89ACDBB16301328ADBDDB0 /* libPods-Havana_Mobile-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Havana_Mobile-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC3085CA24729AA2005BBC22 /* My Office.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "My Office.entitlements"; path = "Havana_Mobile/My Office.entitlements"; sourceTree = "<group>"; };
+		DC3085CE2475E055005BBC22 /* TLV Office walk.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "TLV Office walk.gpx"; path = "../../../Downloads/TLV Office walk.gpx"; sourceTree = "<group>"; };
 		DC8A77A876E8E1941419A797 /* Pods-Havana_Mobile-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Havana_Mobile-tvOS.release.xcconfig"; path = "Target Support Files/Pods-Havana_Mobile-tvOS/Pods-Havana_Mobile-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		DCD587102460E38B00B27770 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		DCD587112460E39B00B27770 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AntDesign.ttf; path = "../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 		13B07FAE1A68108700A75B9A /* Havana_Mobile */ = {
 			isa = PBXGroup;
 			children = (
+				DC3085CE2475E055005BBC22 /* TLV Office walk.gpx */,
 				DC3085CA24729AA2005BBC22 /* My Office.entitlements */,
 				DCD5870F2460E30700B27770 /* Fonts */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
@@ -357,6 +360,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				DC3085CF2475E055005BBC22 /* TLV Office walk.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

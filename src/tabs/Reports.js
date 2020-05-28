@@ -1,6 +1,5 @@
 /**
  * @format
- * @flow strict-local
  */
 import React, {useState, useEffect, useContext} from 'react';
 import _ from 'lodash';
@@ -52,8 +51,8 @@ LocaleConfig.locales['en'] = {
     'Tuesday',
     'Wednesday',
     'Thursday',
-    'пятница',
-    'суббота',
+    'Friday',
+    'Saturday',
   ],
   dayNamesShort: ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'],
   today: 'Today',
@@ -68,94 +67,46 @@ import {
 
 import DataContext from '../DataContext';
 
-const today = new Date().toISOString().split('T')[0];
-const fastDate = getPastDate(3);
-const futureDates = getFutureDates(9);
-const dates = [fastDate, today].concat(futureDates);
+// const today = new Date().toISOString().split('T')[0];
+// const fastDate = getPastDate(3);
+// const futureDates = getFutureDates(9);
+// const dates = [fastDate, today].concat(futureDates);
 const themeColor = '#00AAAF';
 const lightThemeColor = '#EBF9F9';
 
-function getFutureDates(days) {
-  const array = [];
-  for (let index = 1; index <= days; index++) {
-    const date = new Date(Date.now() + 864e5 * index); // 864e5 == 86400000 == 24*60*60*1000
-    const dateString = date.toISOString().split('T')[0];
-    array.push(dateString);
-  }
-  return array;
-}
+// function getFutureDates(days) {
+//   const array = [];
+//   for (let index = 1; index <= days; index++) {
+//     const date = new Date(Date.now() + 864e5 * index); // 864e5 == 86400000 == 24*60*60*1000
+//     const dateString = date.toISOString().split('T')[0];
+//     array.push(dateString);
+//   }
+//   return array;
+// }
 
-function getPastDate(days) {
-  return new Date(Date.now() - 864e5 * days).toISOString().split('T')[0];
-}
+// function getPastDate(days) {
+//   return new Date(Date.now() - 864e5 * days).toISOString().split('T')[0];
+// }
 
-const ITEMS = [
-  {
-    title: dates[0],
-    // data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
-    data: [],
-  },
-  {
-    title: dates[1],
-    data: [
-      {hour: '4pm', duration: '1h', title: 'Entry'},
-      {hour: '5pm', duration: '1h', title: 'Exit'},
-    ],
-  },
-  {
-    title: dates[2],
-    data: [
-      {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
-      {hour: '2pm', duration: '1h', title: 'Deep Streches'},
-      {hour: '3pm', duration: '1h', title: 'Private Yoga'},
-    ],
-  },
-  {
-    title: dates[3],
-    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
-  },
-  {title: dates[4], data: [{}]},
-  {
-    title: dates[5],
-    data: [
-      {hour: '9pm', duration: '1h', title: 'Pilates Reformer'},
-      {hour: '10pm', duration: '1h', title: 'Ashtanga'},
-      {hour: '11pm', duration: '1h', title: 'TRX'},
-      {hour: '12pm', duration: '1h', title: 'Running Group'},
-    ],
-  },
-  {
-    title: dates[6],
-    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
-  },
-  {title: dates[7], data: [{}]},
-  {
-    title: dates[8],
-    data: [
-      {hour: '9pm', duration: '1h', title: 'Pilates Reformer'},
-      {hour: '10pm', duration: '1h', title: 'Ashtanga'},
-      {hour: '11pm', duration: '1h', title: 'TRX'},
-      {hour: '12pm', duration: '1h', title: 'Running Group'},
-    ],
-  },
-  {
-    title: dates[9],
-    data: [
-      {hour: '1pm', duration: '1h', title: 'Ashtanga Yoga'},
-      {hour: '2pm', duration: '1h', title: 'Deep Streches'},
-      {hour: '3pm', duration: '1h', title: 'Private Yoga'},
-    ],
-  },
-  {
-    title: dates[10],
-    data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
-  },
-];
+// const ITEMS = [
+//   {
+//     title: dates[0],
+//     // data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
+//     data: [],
+//   },
+//   {
+//     title: dates[1],
+//     data: [
+//       {hour: '4pm', duration: '1h', title: 'Entry'},
+//       {hour: '5pm', duration: '1h', title: 'Exit'},
+//     ],
+//   },
+// ];
 
 const Reports = ({route, navigation}) => {
   // const [date, setDate] = useState(new Date());
   const [monthlyReportData, setMonthlyReportData] = useState([]);
-
+  
   const {reportData, daysOff} = useContext(DataContext);
   console.log(reportData);
   console.log(daysOff);
@@ -163,7 +114,13 @@ const Reports = ({route, navigation}) => {
   useEffect(() => {
     const _data = reportData.map((item) => ({
       title: moment(item.rdate).format('YYYY-MM-DD'),
-      data: [{hour: item.entry, duration: item.total, title: item.notes}],
+      data: [{ 
+              entry: item.entry, 
+              exit: item.exit,
+              total: item.total, 
+              title: item.notes
+        },
+      ],
     }));
     setMonthlyReportData(_data);
   }, [reportData]);
@@ -214,7 +171,8 @@ const Reports = ({route, navigation}) => {
   };
 
   const buttonPressed = () => {
-    Alert.alert('show more');
+    // Alert.alert('show more');
+    navigation.navigate('Edit Record');
   };
 
   const itemPressed = (id) => {
@@ -238,13 +196,14 @@ const Reports = ({route, navigation}) => {
       <TouchableOpacity
         onPress={() => itemPressed(item.title)}
         style={styles.item}>
-        <View>
-          <Text style={styles.itemHourText}>{item.hour}</Text>
-          <Text style={styles.itemDurationText}>{item.duration}</Text>
+        <View style={styles.timesSection}>
+          <Text style={styles.itemHourText}>Enter: {item.entry}</Text>
+          <Text style={styles.itemHourText}>Exit: {item.exit}</Text>
+          <Text style={styles.itemDurationText}>Total: {item.total}</Text>
         </View>
         <Text style={styles.itemTitleText}>{item.title}</Text>
         <View style={styles.itemButtonContainer}>
-          <Button color={'grey'} title={'Info'} onPress={buttonPressed} />
+          <Button color={'grey'} title={'Edit'} onPress={buttonPressed} />
         </View>
       </TouchableOpacity>
     );
@@ -263,11 +222,11 @@ const Reports = ({route, navigation}) => {
         marked[item.title] = {marked: true, dotColor: 'green'};
       }
     });
-    monthlyReportData.forEach((item) => {
-      marked[item.title] = item.isWorkingDay
-        ? {disabled: false}
-        : {marked: true, disabled: true};
-    });
+    // monthlyReportData.forEach((item) => {
+    //   marked[item.title] = item.isWorkingDay
+    //     ? {disabled: false}
+    //     : {marked: true, disabled: true};
+    // });
     daysOff.forEach((item) => {
       const propName = moment(item).format('YYYY-MM-DD');
       marked[propName] = {marked: true, dotColor: 'grey', disabled: true};
@@ -277,7 +236,9 @@ const Reports = ({route, navigation}) => {
 
   return (
     <CalendarProvider
-      date={ITEMS[0].title}
+      date={
+        monthlyReportData.length > 0 ? monthlyReportData[0].title : new Date()
+      }
       onDateChanged={onDateChanged}
       onMonthChange={onMonthChange}
       showTodayButton
@@ -304,7 +265,7 @@ const Reports = ({route, navigation}) => {
         rightArrowImageSource={require('../img/next.png')}
       />
       <AgendaList
-        sections={ITEMS}
+        sections={monthlyReportData}
         renderItem={renderItem}
         // sectionStyle={styles.section}
       />
@@ -321,6 +282,11 @@ const styles = StyleSheet.create({
     backgroundColor: lightThemeColor,
     color: 'grey',
     textTransform: 'capitalize',
+  },
+  timesSection: {
+    paddingRight: 14,
+    borderRightWidth: 2,
+    borderRightColor: 'green',
   },
   item: {
     padding: 20,

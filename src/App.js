@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /**
  * @format
- * @flow strict-local
  */
 
 import React, {
@@ -37,6 +36,7 @@ import AuthContext from './AuthContext';
 import HomeScreen from './screens/HomeScreen';
 import SignInScreen from './screens/SignInScreen';
 import OtpScreen from './screens/OtpScreen';
+import EditRecordModal from './screens/EditRecordModal';
 
 const reducer = (prevState, action) => {
   switch (action.type) {
@@ -121,18 +121,25 @@ const App = () => {
         BackgroundGeolocation.onGeofence(onGeoFence);
         const locationState = await BackgroundGeolocation.ready({
           desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
+          distanceFilter: 10,
           logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+          debug: true,
+          stopOnTerminate: false, // <-- Allow the background-service to continue tracking when app terminated.
+          startOnBoot: true,
           locationAuthorizationRequest: 'Always',
           geofenceModeHighAccuracy: true,
         });
-        console.log('- BackgroundGeolocation is ready: ', locationState);
-        if (locationState.enabled) {
-          // engage geofences-only mode:
-          BackgroundGeolocation.startGeofences();
-          // BackgroundGeolocation.start(() => {
-          //   console.log('- Start success');
-          // });
-        }
+
+        console.log(
+          '- BackgroundGeolocation is configured and ready: ',
+          locationState.enabled,
+        );
+        //if (locationState.enabled) {
+        // engage geofences-only mode:
+        BackgroundGeolocation.startGeofences();
+        // BackgroundGeolocation.start(() => {
+        //   console.log('- Start success');
+        // });
       } catch (error) {
         console.log('- BackgroundGeolocation error: ', error);
       }
@@ -174,6 +181,13 @@ const App = () => {
               component={OtpScreen}
               options={{
                 title: 'OTP',
+              }}
+            />
+            <Stack.Screen
+              name="Edit Record"
+              component={EditRecordModal}
+              options={{
+                headerShown: false,
               }}
             />
             <Stack.Screen

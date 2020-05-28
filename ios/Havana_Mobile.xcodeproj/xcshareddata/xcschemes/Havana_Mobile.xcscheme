@@ -61,8 +61,8 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <LocationScenarioReference
-         identifier = "New York, NY, USA"
-         referenceType = "1">
+         identifier = "../../../../Downloads/TLV Office walk.gpx"
+         referenceType = "0">
       </LocationScenarioReference>
    </LaunchAction>
    <ProfileAction
