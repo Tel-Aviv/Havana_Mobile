@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   TextInput,
   ActivityIndicator,
-  useColorScheme
+  useColorScheme,
 } from 'react-native';
 import {
   Container,
@@ -21,11 +21,14 @@ import {
   Spinner,
 } from 'native-base';
 import {Button, Text, View} from 'react-native-ui-lib';
+import BottomSheet from 'reanimated-bottom-sheet';
 
 const SignInScreen = ({navigation}) => {
   const [username, setUsername] = useState('c1306948');
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('0543307026');
+
+  const bs = React.createRef();
 
   const colorScheme = useColorScheme();
 
@@ -50,6 +53,20 @@ const SignInScreen = ({navigation}) => {
       setLoading(false);
     }
   };
+
+  // const renderContent = () => (
+  //   <View style={styles.panel}>
+  //     <Text>San Francisco Airport</Text>
+  //   </View>
+  // );
+
+  // const renderHeader = () => (
+  //   <View style={styles.header}>
+  //     <View style={styles.panelHeader}>
+  //       <View style={styles.panelHandle} />
+  //     </View>
+  //   </View>
+  // );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -91,6 +108,15 @@ const SignInScreen = ({navigation}) => {
                 onPress={() => onSignIn()}
               />
             </View>
+            {/* <View style={styles.container}>
+              <BottomSheet
+                ref={bs}
+                snapPoints={[500, 250, 0]}
+                renderContent={renderContent}
+                renderHeader={renderHeader}
+                initialSnap={1}
+              />
+            </View> */}
           </>
         )}
       </Container>
@@ -115,6 +141,29 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
+  },
+  // bottom sheet
+  panel: {
+    height: 600,
+    padding: 20,
+    backgroundColor: '#f7f5eee8',
+  },
+  header: {
+    backgroundColor: '#f7f5eee8',
+    shadowColor: '#000000',
+    paddingTop: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  panelHeader: {
+    alignItems: 'center',
+  },
+  panelHandle: {
+    width: 40,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#00000040',
+    marginBottom: 10,
   },
 });
 

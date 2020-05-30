@@ -36,7 +36,6 @@ import AuthContext from './AuthContext';
 import HomeScreen from './screens/HomeScreen';
 import SignInScreen from './screens/SignInScreen';
 import OtpScreen from './screens/OtpScreen';
-import EditRecordModal from './screens/EditRecordModal';
 
 const reducer = (prevState, action) => {
   switch (action.type) {
@@ -181,13 +180,6 @@ const App = () => {
               component={OtpScreen}
               options={{
                 title: 'OTP',
-              }}
-            />
-            <Stack.Screen
-              name="Edit Record"
-              component={EditRecordModal}
-              options={{
-                headerShown: false,
               }}
             />
             <Stack.Screen

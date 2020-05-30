@@ -64,7 +64,7 @@ import {
   AgendaList,
   CalendarProvider,
 } from 'react-native-calendars';
-
+import BottomSheet from 'reanimated-bottom-sheet';
 import DataContext from '../DataContext';
 
 // const today = new Date().toISOString().split('T')[0];
@@ -106,22 +106,32 @@ const lightThemeColor = '#EBF9F9';
 const Reports = ({route, navigation}) => {
   // const [date, setDate] = useState(new Date());
   const [monthlyReportData, setMonthlyReportData] = useState([]);
-  
+  const [edtingRecord, setEditingRecord] = useState();
+
   const {reportData, daysOff} = useContext(DataContext);
   console.log(reportData);
   console.log(daysOff);
 
+  const bs = React.createRef();
+
   useEffect(() => {
-    const _data = reportData.map((item) => ({
-      title: moment(item.rdate).format('YYYY-MM-DD'),
-      data: [{ 
-              entry: item.entry, 
-              exit: item.exit,
-              total: item.total, 
-              title: item.notes
-        },
-      ],
-    }));
+    const _data = reportData.map((item) => {
+      const date = moment(item.rdate).format('YYYY-MM-DD');
+
+      return {
+        title: date,
+        data: [
+          {
+            entry: item.entry,
+            exit: item.exit,
+            total: item.total,
+            notes: item.notes,
+            date: date,
+          },
+        ],
+      };
+    });
+
     setMonthlyReportData(_data);
   }, [reportData]);
 
@@ -170,9 +180,9 @@ const Reports = ({route, navigation}) => {
     // console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
   };
 
-  const buttonPressed = () => {
-    // Alert.alert('show more');
-    navigation.navigate('Edit Record');
+  const buttonPressed = (item) => {
+    setEditingRecord(item);
+    bs.current.snapTo(0);
   };
 
   const itemPressed = (id) => {
@@ -187,7 +197,7 @@ const Reports = ({route, navigation}) => {
     );
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item}, rest) => {
     if (_.isEmpty(item)) {
       return renderEmptyItem();
     }
@@ -201,9 +211,13 @@ const Reports = ({route, navigation}) => {
           <Text style={styles.itemHourText}>Exit: {item.exit}</Text>
           <Text style={styles.itemDurationText}>Total: {item.total}</Text>
         </View>
-        <Text style={styles.itemTitleText}>{item.title}</Text>
+        <Text style={styles.itemTitleText}>{item.notes}</Text>
         <View style={styles.itemButtonContainer}>
-          <Button color={'grey'} title={'Edit'} onPress={buttonPressed} />
+          <Button
+            color={'grey'}
+            title={'Edit'}
+            onPress={() => buttonPressed(item)}
+          />
         </View>
       </TouchableOpacity>
     );
@@ -219,7 +233,7 @@ const Reports = ({route, navigation}) => {
     // });
     monthlyReportData.forEach((item) => {
       if (item.data && item.data.length > 0 && !_.isEmpty(item.data[0])) {
-        marked[item.title] = {marked: true, dotColor: 'green'};
+        marked[item.notes] = {marked: true, dotColor: 'green'};
       }
     });
     // monthlyReportData.forEach((item) => {
@@ -233,6 +247,24 @@ const Reports = ({route, navigation}) => {
     });
     return marked;
   };
+
+  const renderContent = () => {
+    const date = moment(edtingRecord.date, 'YYYY-MM-DD');
+    return edtingRecord ? (
+      <View style={styles.panel}>
+        <Text style={styles.panelTitle}>{date.format('DD/MM/YYYY')}</Text>
+        <Text style={styles.panelSubtitle}>Entry: {edtingRecord.entry}</Text>
+      </View>
+    ) : null;
+  };
+
+  const renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.panelHeader}>
+        <View style={styles.panelHandle} />
+      </View>
+    </View>
+  );
 
   return (
     <CalendarProvider
@@ -264,16 +296,28 @@ const Reports = ({route, navigation}) => {
         leftArrowImageSource={require('../img/previous.png')}
         rightArrowImageSource={require('../img/next.png')}
       />
-      <AgendaList
-        sections={monthlyReportData}
-        renderItem={renderItem}
-        // sectionStyle={styles.section}
-      />
+      <View style={styles.container}>
+        <BottomSheet
+          ref={bs}
+          snapPoints={[500, 250, 0]}
+          renderContent={renderContent}
+          renderHeader={renderHeader}
+          initialSnap={2}
+        />
+        <AgendaList
+          sections={monthlyReportData}
+          renderItem={renderItem}
+          // sectionStyle={styles.section}
+        />
+      </View>
     </CalendarProvider>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   calendar: {
     paddingLeft: 20,
     paddingRight: 20,
@@ -324,6 +368,51 @@ const styles = StyleSheet.create({
   emptyItemText: {
     color: 'lightgrey',
     fontSize: 14,
+  },
+  // bottom sheet
+  panel: {
+    height: 600,
+    padding: 20,
+    backgroundColor: '#f7f5eee8',
+  },
+  panelTitle: {
+    fontSize: 27,
+    height: 35,
+  },
+  panelSubtitle: {
+    fontSize: 14,
+    color: 'gray',
+    height: 30,
+    marginBottom: 10,
+  },
+  panelButton: {
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: '#318bfb',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  panelButtonTitle: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  header: {
+    backgroundColor: '#f7f5eee8',
+    shadowColor: '#000000',
+    paddingTop: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  panelHeader: {
+    alignItems: 'center',
+  },
+  panelHandle: {
+    width: 40,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#00000040',
+    marginBottom: 10,
   },
 });
 

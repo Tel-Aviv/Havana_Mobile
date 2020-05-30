@@ -29,12 +29,12 @@
     "react-native-background-geolocation": "^3.6.2",
     "react-native-calendars": "^1.265.0",
     "react-native-gesture-handler": "^1.6.1",
-    "react-native-navigation": "^6.7.0",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^1.0.0",
     "react-native-screens": "^2.7.0",
     "react-native-ui-lib": "^5.7.2",
     "react-native-vector-icons": "^6.6.0",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.20",
     "yarn": "^1.22.4"
   },
   "devDependencies": {
