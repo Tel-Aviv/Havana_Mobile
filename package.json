@@ -13,7 +13,6 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.10.0",
     "@react-native-community/blur": "^3.6.0",
-    "@react-native-community/datetimepicker": "^2.4.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/netinfo": "^5.8.1",
     "@react-navigation/bottom-tabs": "^5.3.3",
@@ -28,6 +27,7 @@
     "react-native-background-fetch": "^3.0.5",
     "react-native-background-geolocation": "^3.6.2",
     "react-native-calendars": "^1.265.0",
+    "react-native-datepicker": "^1.7.2",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^1.0.0",
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.6",
     "@babel/runtime": "^7.9.6",
+    "@react-native-community/datetimepicker": "^2.4.0",
     "@react-native-community/eslint-config": "^1.1.0",
     "babel-jest": "^25.5.1",
     "eslint": "^6.8.0",

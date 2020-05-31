@@ -67,47 +67,12 @@ import {
 import BottomSheet from 'reanimated-bottom-sheet';
 import DataContext from '../DataContext';
 
-// const today = new Date().toISOString().split('T')[0];
-// const fastDate = getPastDate(3);
-// const futureDates = getFutureDates(9);
-// const dates = [fastDate, today].concat(futureDates);
 const themeColor = '#00AAAF';
 const lightThemeColor = '#EBF9F9';
-
-// function getFutureDates(days) {
-//   const array = [];
-//   for (let index = 1; index <= days; index++) {
-//     const date = new Date(Date.now() + 864e5 * index); // 864e5 == 86400000 == 24*60*60*1000
-//     const dateString = date.toISOString().split('T')[0];
-//     array.push(dateString);
-//   }
-//   return array;
-// }
-
-// function getPastDate(days) {
-//   return new Date(Date.now() - 864e5 * days).toISOString().split('T')[0];
-// }
-
-// const ITEMS = [
-//   {
-//     title: dates[0],
-//     // data: [{hour: '12am', duration: '1h', title: 'Ashtanga Yoga'}],
-//     data: [],
-//   },
-//   {
-//     title: dates[1],
-//     data: [
-//       {hour: '4pm', duration: '1h', title: 'Entry'},
-//       {hour: '5pm', duration: '1h', title: 'Exit'},
-//     ],
-//   },
-// ];
 
 const Reports = ({route, navigation}) => {
   // const [date, setDate] = useState(new Date());
   const [monthlyReportData, setMonthlyReportData] = useState([]);
-  const [edtingRecord, setEditingRecord] = useState();
-
   const {reportData, daysOff} = useContext(DataContext);
   console.log(reportData);
   console.log(daysOff);
@@ -180,13 +145,13 @@ const Reports = ({route, navigation}) => {
     // console.warn('ExpandableCalendarScreen onMonthChange: ', month, updateSource);
   };
 
-  const buttonPressed = (item) => {
-    setEditingRecord(item);
-    bs.current.snapTo(0);
-  };
+  const itemPressed = (item) => {
+    // setEditingRecord(item);
+    // bs.current.snapTo(0);
 
-  const itemPressed = (id) => {
-    Alert.alert(id);
+    navigation.navigate('Edit Record', {
+      item: item,
+    });
   };
 
   const renderEmptyItem = () => {
@@ -203,22 +168,13 @@ const Reports = ({route, navigation}) => {
     }
 
     return (
-      <TouchableOpacity
-        onPress={() => itemPressed(item.title)}
-        style={styles.item}>
+      <TouchableOpacity onPress={() => itemPressed(item)} style={styles.item}>
         <View style={styles.timesSection}>
           <Text style={styles.itemHourText}>Enter: {item.entry}</Text>
           <Text style={styles.itemHourText}>Exit: {item.exit}</Text>
           <Text style={styles.itemDurationText}>Total: {item.total}</Text>
         </View>
         <Text style={styles.itemTitleText}>{item.notes}</Text>
-        <View style={styles.itemButtonContainer}>
-          <Button
-            color={'grey'}
-            title={'Edit'}
-            onPress={() => buttonPressed(item)}
-          />
-        </View>
       </TouchableOpacity>
     );
   };
@@ -248,23 +204,47 @@ const Reports = ({route, navigation}) => {
     return marked;
   };
 
-  const renderContent = () => {
-    const date = moment(edtingRecord.date, 'YYYY-MM-DD');
-    return edtingRecord ? (
-      <View style={styles.panel}>
-        <Text style={styles.panelTitle}>{date.format('DD/MM/YYYY')}</Text>
-        <Text style={styles.panelSubtitle}>Entry: {edtingRecord.entry}</Text>
-      </View>
-    ) : null;
-  };
+  // const renderContent = () => {
+  //   return edtingRecord ? (
+  //     <Form>
+  //       <View style={styles.panel}>
+  //         <Item fixedLabel>
+  //           <Text style={styles.panelTitle}>
+  //             {moment(edtingRecord.date, 'YYYY-MM-DD').format('DD/MM/YYYY')}
+  //           </Text>
+  //         </Item>
+  //         <Item>
+  //           <Label>Entry:</Label>
+  //           <Text style={styles.panelSubtitle} onPress={onEntryTimeEditing}>
+  //             {edtingRecord.entry}
+  //           </Text>
+  //         </Item>
+  //         <Item>
+  //           <Label>Exit:</Label>
+  //           <Text style={styles.panelSubtitle} onPress={onExitTimeEditing}>
+  //             {edtingRecord.exit}
+  //           </Text>
+  //         </Item>
+  //         <Item>
+  //           <Label>Notes:</Label>
+  //           <TextInput value={edtingRecord.notes} />
+  //         </Item>
+  //         <View style={styles.panelButton}>
+  //           <Text style={styles.panelButtonTitle}>Apply</Text>
+  //         </View>
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </View>
-  );
+  //       </View>
+  //     </Form>
+  //   ) : null;
+  // };
+
+  // const renderHeader = () => (
+  //   <View style={styles.header}>
+  //     <View style={styles.panelHeader}>
+  //       <View style={styles.panelHandle} />
+  //     </View>
+  //   </View>
+  // );
 
   return (
     <CalendarProvider
@@ -297,13 +277,13 @@ const Reports = ({route, navigation}) => {
         rightArrowImageSource={require('../img/next.png')}
       />
       <View style={styles.container}>
-        <BottomSheet
+        {/* <BottomSheet
           ref={bs}
           snapPoints={[500, 250, 0]}
           renderContent={renderContent}
           renderHeader={renderHeader}
           initialSnap={2}
-        />
+        /> */}
         <AgendaList
           sections={monthlyReportData}
           renderItem={renderItem}
