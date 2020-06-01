@@ -1,7 +1,20 @@
 // flow
 import React, {useState, useEffect} from 'react';
 import {View, Button, TextInput, StyleSheet} from 'react-native';
-import {Text, Form, Item, Input, Label} from 'native-base';
+import {
+  Text,
+  Container,
+  Form,
+  Header,
+  Content,
+  Item,
+  Input,
+  Label,
+  Left,
+  Right,
+  Body,
+  Icon,
+} from 'native-base';
 import moment from 'moment';
 import DatePicker from 'react-native-datepicker';
 
@@ -23,24 +36,48 @@ const EditRecordModal = ({route, navigation}) => {
     setEnterTime(selectedTime);
   };
   return (
-    <View style={styles.container}>
-      <Form>
-        <View style={styles.panel}>
-          <Text style={{fontSize: 30}}>{item.date}</Text>
-          <Item>
+    <Container>
+      <Header span transparent>
+        <Left>
+          <Icon name="arrow-back" onPress={() => navigation.goBack()} />
+        </Left>
+        <Body>
+          <Text style={{fontSize: 20}}>{item.date}</Text>
+        </Body>
+        <Right />
+      </Header>
+      <Content>
+        <Form>
+          <Item underline>
             <Label>Entry:</Label>
             <DatePicker
+              customStyles={{
+                dateInput: {
+                  borderWidth: 0,
+                },
+              }}
               date={enterTime}
               mode="time"
+              is24Hour={true}
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               display="default"
               onDateChange={(date) => onTimePickerChange(date)}
             />
           </Item>
-          <Item>
-            <Label>Exit:</Label>
+          <Item underline>
+            <Label
+              style={{
+                marginRight: 12
+              }}>
+              Exit:
+            </Label>
             <DatePicker
+              customStyles={{
+                dateInput: {
+                  borderWidth: 0,
+                },
+              }}
               date={exitTime}
               mode="time"
               confirmBtnText="Confirm"
@@ -50,13 +87,14 @@ const EditRecordModal = ({route, navigation}) => {
             />
           </Item>
           <Item>
+            <Icon active name='home' />
             <Label>Notes:</Label>
             <TextInput style={styles.panelSubtitle}>{item.notes}</TextInput>
           </Item>
-        </View>
-        <Button onPress={() => navigation.goBack()} title="Update" />
-      </Form>
-    </View>
+          <Button onPress={() => navigation.goBack()} title="Update" />
+        </Form>
+      </Content>
+    </Container>
   );
 };
 
@@ -75,7 +113,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
     height: 30,
-    marginBottom: 10,
+    width: 200,
+    direction: 'rtl',
   },
 });
 

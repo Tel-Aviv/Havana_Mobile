@@ -9,12 +9,12 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleGetInfoString</key>
-	<string></string>
+	<string/>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string/>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string></string>
+		<string/>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -22,7 +22,7 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string></string>
+				<string/>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<false/>
@@ -31,7 +31,7 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string></string>
+				<string/>
 			</array>
 			<key>UINewsstandBindingEdge</key>
 			<string>UINewsstandBindingEdgeLeft</string>
@@ -54,7 +54,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<string/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -71,19 +71,33 @@
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string></string>
+	<string/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>My Office requests the access to your location in order to remind you about reporting hours while you&apos;re entering or living the office location.</string>
+	<string>My Office requests the access to your location in order to remind you about reporting hours while you're entering or living the office location.</string>
 	<key>NSLocationUsageDescription</key>
 	<string>Location required when app is in use</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMotionUsageDescription</key>
 	<string>Motion permission helps detect when device in in-motion</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
 		<string>Ionicons.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Fontisto.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Zocial.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

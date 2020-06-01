@@ -13,7 +13,7 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import {Text} from 'native-base';
+import {Text, Icon} from 'native-base';
 
 import {LocaleConfig} from 'react-native-calendars';
 LocaleConfig.locales['en'] = {
@@ -77,7 +77,7 @@ const Reports = ({route, navigation}) => {
   console.log(reportData);
   console.log(daysOff);
 
-  const bs = React.createRef();
+  // const bs = React.createRef();
 
   useEffect(() => {
     const _data = reportData.map((item) => {
@@ -162,10 +162,20 @@ const Reports = ({route, navigation}) => {
     );
   };
 
+  const isWorkingDay = (item) => {
+    const itemDate = moment(item.date);
+
+    return !(itemDate.day() === 5 || itemDate.day() === 6);
+  };
+
   const renderItem = ({item}, rest) => {
     if (_.isEmpty(item)) {
       return renderEmptyItem();
     }
+
+    const iconClassName = {
+      color: isWorkingDay(item) ? 'green' : 'gray',
+    };
 
     return (
       <TouchableOpacity onPress={() => itemPressed(item)} style={styles.item}>
@@ -174,7 +184,17 @@ const Reports = ({route, navigation}) => {
           <Text style={styles.itemHourText}>Exit: {item.exit}</Text>
           <Text style={styles.itemDurationText}>Total: {item.total}</Text>
         </View>
-        <Text style={styles.itemTitleText}>{item.notes}</Text>
+        <View style={styles.cellItem}>
+          <Icon
+            active={false}
+            type="Ionicons"
+            name={'checkmark-circle'}
+            style={iconClassName}
+          />
+        </View>
+        <Text style={[styles.itemTitleText, styles.cellItem]}>
+          {item.notes}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -318,6 +338,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
     flexDirection: 'row',
+  },
+  cellItem: {
+    alignSelf: 'center',
+    marginLeft: 8,
   },
   itemHourText: {
     color: 'black',
