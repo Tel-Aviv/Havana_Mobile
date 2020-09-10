@@ -84,7 +84,7 @@ const Reports = ({route, navigation}) => {
       const date = moment(item.rdate).format('YYYY-MM-DD');
 
       const reportCode = reportCodes.find(
-        (el) => el.ShortDecription === item.reportType,
+        (el) => el.ShortDescription === item.reportType,
       );
       const reportType = reportCode ? reportCode.Description : item.reportType;
 
@@ -96,7 +96,7 @@ const Reports = ({route, navigation}) => {
             exit: item.exit,
             total: item.total,
             required: item.required,
-            reportType: reportType,
+            reportType: reportType || 'Usual',
             notes: item.notes,
             date: date,
           },
