@@ -13,7 +13,7 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import {Text, Icon} from 'native-base';
+import {Text, Icon, Spinner} from 'native-base';
 
 import {LocaleConfig} from 'react-native-calendars';
 LocaleConfig.locales['en'] = {
@@ -64,7 +64,7 @@ import {
   AgendaList,
   CalendarProvider,
 } from 'react-native-calendars';
-import BottomSheet from 'reanimated-bottom-sheet';
+// import BottomSheet from 'reanimated-bottom-sheet';
 import DataContext from '../DataContext';
 
 const themeColor = '#00AAAF';
@@ -73,9 +73,9 @@ const lightThemeColor = '#EBF9F9';
 const Reports = ({route, navigation}) => {
   // const [date, setDate] = useState(new Date());
   const [monthlyReportData, setMonthlyReportData] = useState([]);
-  const {reportData, daysOff} = useContext(DataContext);
-  console.log(reportData);
-  console.log(daysOff);
+  const {reportData, manualUpdates, daysOff, reportCodes } = useContext(DataContext);
+  // console.log(reportData);
+  // console.log(daysOff);
 
   // const bs = React.createRef();
 
@@ -83,13 +83,20 @@ const Reports = ({route, navigation}) => {
     const _data = reportData.map((item) => {
       const date = moment(item.rdate).format('YYYY-MM-DD');
 
+      const reportCode = reportCodes.find(
+        (el) => el.ShortDecription === item.reportType,
+      );
+      const reportType = reportCode ? reportCode.Description : item.reportType;
+
       return {
-        title: date,
+        title: `${date} (${item.dayOfWeek})`,
         data: [
           {
             entry: item.entry,
             exit: item.exit,
             total: item.total,
+            required: item.required,
+            reportType: reportType,
             notes: item.notes,
             date: date,
           },
@@ -98,7 +105,7 @@ const Reports = ({route, navigation}) => {
     });
 
     setMonthlyReportData(_data);
-  }, [reportData]);
+  }, [reportData, reportCodes]);
 
   const getTheme = () => {
     const disabledColor = 'grey';
@@ -146,11 +153,13 @@ const Reports = ({route, navigation}) => {
   };
 
   const itemPressed = (item) => {
-    // setEditingRecord(item);
-    // bs.current.snapTo(0);
+    if (!isRecordUpdatedManually(item)) {
+      return;
+    }
 
     navigation.navigate('Edit Record', {
       item: item,
+      reportCodes: reportCodes,
     });
   };
 
@@ -162,10 +171,30 @@ const Reports = ({route, navigation}) => {
     );
   };
 
+  const isRecordUpdatedManually = (record) => {
+    const recordDate = moment(record.date, 'YYYY-MM-DD');
+    const index = manualUpdates.findIndex((item) => {
+      return (
+        item.Day === parseInt(recordDate.date(), 10) && item.InOut === true
+      );
+    });
+
+    return index === -1 ? false : true;
+  };
+
   const isWorkingDay = (item) => {
     const itemDate = moment(item.date);
 
-    return !(itemDate.day() === 5 || itemDate.day() === 6);
+    const index = daysOff.findIndex(
+      (dayOff) =>
+        dayOff.getDate() === itemDate.date() &&
+        dayOff.getMonth() === itemDate.month() &&
+        dayOff.getFullYear() === itemDate.year(),
+    );
+
+    return index !== -1
+      ? false
+      : !(itemDate.day() === 5 || itemDate.day() === 6);
   };
 
   const renderItem = ({item}, rest) => {
@@ -173,22 +202,35 @@ const Reports = ({route, navigation}) => {
       return renderEmptyItem();
     }
 
+    const _isWorkingDay = isWorkingDay(item);
+
     const iconClassName = {
-      color: isWorkingDay(item) ? 'green' : 'gray',
+      color: _isWorkingDay ? 'green' : 'gray',
     };
 
     return (
-      <TouchableOpacity onPress={() => itemPressed(item)} style={styles.item}>
+      <TouchableOpacity
+        onPress={() => (_isWorkingDay ? itemPressed(item) : null)}
+        style={styles.item}>
         <View style={styles.timesSection}>
-          <Text style={styles.itemHourText}>Enter: {item.entry}</Text>
-          <Text style={styles.itemHourText}>Exit: {item.exit}</Text>
-          <Text style={styles.itemDurationText}>Total: {item.total}</Text>
+          <View style={styles.cellFirstRow}>
+            <Text style={styles.itemHourText}>Enter:</Text>
+            <Text>{item.entry}</Text>
+          </View>
+          <View style={styles.cellRow}>
+            <Text style={styles.itemHourText}>Exit:</Text>
+            <Text>{item.exit}</Text>
+          </View>
+          <View style={styles.cellRow}>
+            <Text style={styles.itemHourText}>Total:</Text>
+            <Text>{item.total}</Text>
+          </View>
         </View>
         <View style={styles.cellItem}>
           <Icon
             active={false}
-            type="Ionicons"
-            name={'checkmark-circle'}
+            name={'checkmark-circle-outline'}
+            ype="AntDesign"
             style={iconClassName}
           />
         </View>
@@ -266,7 +308,7 @@ const Reports = ({route, navigation}) => {
   //   </View>
   // );
 
-  return (
+  return monthlyReportData.length > 0 ? (
     <CalendarProvider
       date={
         monthlyReportData.length > 0 ? monthlyReportData[0].title : new Date()
@@ -311,6 +353,8 @@ const Reports = ({route, navigation}) => {
         />
       </View>
     </CalendarProvider>
+  ) : (
+    <Spinner size="large" color="#0000ff" />
   );
 };
 
@@ -331,6 +375,7 @@ const styles = StyleSheet.create({
     paddingRight: 14,
     borderRightWidth: 2,
     borderRightColor: 'green',
+    width: '28%',
   },
   item: {
     padding: 20,
@@ -343,14 +388,24 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginLeft: 8,
   },
+  cellFirstRow: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  cellRow: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
   itemHourText: {
     color: 'black',
+    // marginTop: 4,
+    width: '60%',
   },
   itemDurationText: {
     color: 'grey',
     fontSize: 12,
     marginTop: 4,
-    marginLeft: 4,
+    width: '60%',
   },
   itemTitleText: {
     color: 'black',

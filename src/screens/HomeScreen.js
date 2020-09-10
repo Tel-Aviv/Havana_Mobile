@@ -4,7 +4,7 @@
 import React, {useState, useEffect, useReducer} from 'react';
 import axios from 'axios';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Reports from '../tabs/Reports';
@@ -25,11 +25,11 @@ const MyTabs = (props) => {
       <Tab.Screen
         name="Reports"
         component={Reports}
-        initialParams={props.reportData}
+        initialParams={props.reportState}
         options={{
           tabBarLabel: 'Reports',
           tabBarIcon: ({color, size}) => (
-            <Icon name="ios-home" color={color} size={size} />
+            <Icon name="home" color={color} size={size} />
           ),
         }}
       />
@@ -39,7 +39,7 @@ const MyTabs = (props) => {
         options={{
           tabBarLabel: 'Inbox',
           tabBarIcon: ({color, size}) => (
-            <Icon name="ios-notifications" color={color} size={size} />
+            <Icon name="notifications" color={color} size={size} />
           ),
         }}
       />
@@ -49,7 +49,7 @@ const MyTabs = (props) => {
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({color, size}) => (
-            <Icon name="ios-person" color={color} size={size} />
+            <Icon name="person" color={color} size={size} />
           ),
         }}
       />
@@ -77,6 +77,12 @@ const dataReducer = (prevState, action) => {
         manualUpdates: action.data,
       };
 
+    case 'SET_REPORT_CODES':
+      return {
+        ...prevState,
+        reportCodes: action.data,
+      };
+
     default:
       return {
         ...prevState,
@@ -89,8 +95,9 @@ const HomeScreen = (props) => {
     reportData: [],
     daysOff: [],
     manualUpdates: [],
+    reportCodes: [],
   };
-  const [reportData, dispatch] = useReducer(dataReducer, initialState);
+  const [reportState, dispatch] = useReducer(dataReducer, initialState);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,13 +132,18 @@ const HomeScreen = (props) => {
             },
           ),
           axios(
-            `https://api.tel-aviv.gov.il/ps/me/manual_updates?year=${year}&month=${month}`,
+            `https://api.tel-aviv.gov.il/ps/me/reports/manual_updates?year=${year}&month=${month}`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
             },
           ),
+          axios('https://api.tel-aviv.gov.il/ps/me', {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
         ]);
         data = respArr[0].data.items.map(
           (item) => new Date(Date.parse(item.date)),
@@ -140,6 +152,8 @@ const HomeScreen = (props) => {
 
         data = respArr[2].data.items;
         dispatch({type: 'SET_MANUAL_UPDATES', data: data});
+
+        const userID = respArr[3].data.ID;
 
         let reportId = 0;
 
@@ -152,6 +166,27 @@ const HomeScreen = (props) => {
           if (savedReportId) {
             // Interim report found. Actually the following call gets
             // the merged report: saved changes over the original data
+
+            const employerCode = respArr[1].data.employerCode || 0;
+            _resp = await axios.get(
+              'https://api.tel-aviv.gov.il/ps/me/report_codes',
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+                params: {
+                  id: userID,
+                  employerCode: employerCode,
+                  year: year,
+                  month: month,
+                },
+              },
+            );
+            dispatch({
+              type: 'SET_REPORT_CODES',
+              data: _resp.data.items,
+            });
+
             _resp = await axios(
               `https://api.tel-aviv.gov.il/ps/me/reports/saved?savedReportGuid=${savedReportId}`,
               {
@@ -207,7 +242,7 @@ const HomeScreen = (props) => {
   }, []);
 
   return (
-    <DataContext.Provider value={reportData}>
+    <DataContext.Provider value={reportState}>
       <MyTabs />
     </DataContext.Provider>
   );

@@ -24,7 +24,7 @@ import {
 import axios from 'axios';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import AsyncStorage from '@react-native-community/async-storage';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from 'native-base';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 const Stack = createStackNavigator();
@@ -189,7 +189,7 @@ const App = () => {
               options={{
                 headerShown: false,
               }}
-            />            
+            />
             <Stack.Screen
               name="My Office"
               component={HomeScreen}
@@ -205,7 +205,7 @@ const App = () => {
                       onPress={() => Alert.alert('check')}
                     />
                     <Icon
-                      name="ios-send"
+                      name="send"
                       size={24}
                       color={'red'}
                       style={styles.rightBandItem}

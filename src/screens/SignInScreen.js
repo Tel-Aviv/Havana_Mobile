@@ -21,14 +21,11 @@ import {
   Spinner,
 } from 'native-base';
 import {Button, Text, View} from 'react-native-ui-lib';
-import BottomSheet from 'reanimated-bottom-sheet';
 
 const SignInScreen = ({navigation}) => {
   const [username, setUsername] = useState('c1306948');
   const [loading, setLoading] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('0543307026');
-
-  const bs = React.createRef();
 
   const colorScheme = useColorScheme();
 
@@ -53,20 +50,6 @@ const SignInScreen = ({navigation}) => {
       setLoading(false);
     }
   };
-
-  // const renderContent = () => (
-  //   <View style={styles.panel}>
-  //     <Text>San Francisco Airport</Text>
-  //   </View>
-  // );
-
-  // const renderHeader = () => (
-  //   <View style={styles.header}>
-  //     <View style={styles.panelHeader}>
-  //       <View style={styles.panelHandle} />
-  //     </View>
-  //   </View>
-  // );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,15 +91,6 @@ const SignInScreen = ({navigation}) => {
                 onPress={() => onSignIn()}
               />
             </View>
-            {/* <View style={styles.container}>
-              <BottomSheet
-                ref={bs}
-                snapPoints={[500, 250, 0]}
-                renderContent={renderContent}
-                renderHeader={renderHeader}
-                initialSnap={1}
-              />
-            </View> */}
           </>
         )}
       </Container>

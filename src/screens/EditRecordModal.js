@@ -1,28 +1,37 @@
 // flow
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, Button, TextInput, StyleSheet} from 'react-native';
 import {
   Text,
   Container,
-  Form,
   Header,
   Content,
-  Item,
   Input,
   Label,
   Left,
   Right,
   Body,
   Icon,
+  List,
+  ListItem,
+  Badge,
+  Separator,
+  Picker,
 } from 'native-base';
 import moment from 'moment';
 import DatePicker from 'react-native-datepicker';
 
+//import DataContext from '../DataContext';
+
 const EditRecordModal = ({route, navigation}) => {
   const [enterTime, setEnterTime] = useState();
   const [exitTime, setExitTime] = useState();
+  const [reportCode, setReportCode] = useState('ddd');
+
+  //const {reportCodes} = useContext(DataContext);
 
   const item = route.params.item;
+  const reportCodes = route.params.reportCodes;
 
   useEffect(() => {
     const _entryTime = moment(item.date + 'T' + item.entry, 'YYYY-MM-DDTHH:mm');
@@ -32,14 +41,11 @@ const EditRecordModal = ({route, navigation}) => {
     setExitTime(_exitTime);
   }, [route.params.item]);
 
-  const onTimePickerChange = (selectedTime) => {
-    setEnterTime(selectedTime);
-  };
   return (
     <Container>
       <Header span transparent>
         <Left>
-          <Icon name="arrow-back" onPress={() => navigation.goBack()} />
+          <Icon ios="ios-arrow-back" onPress={() => navigation.goBack()} />
         </Left>
         <Body>
           <Text style={{fontSize: 20}}>{item.date}</Text>
@@ -47,52 +53,81 @@ const EditRecordModal = ({route, navigation}) => {
         <Right />
       </Header>
       <Content>
-        <Form>
-          <Item underline>
-            <Label>Entry:</Label>
-            <DatePicker
-              customStyles={{
-                dateInput: {
-                  borderWidth: 0,
-                },
-              }}
-              date={enterTime}
-              mode="time"
-              is24Hour={true}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              display="default"
-              onDateChange={(date) => onTimePickerChange(date)}
-            />
-          </Item>
-          <Item underline>
-            <Label
-              style={{
-                marginRight: 12
-              }}>
-              Exit:
-            </Label>
-            <DatePicker
-              customStyles={{
-                dateInput: {
-                  borderWidth: 0,
-                },
-              }}
-              date={exitTime}
-              mode="time"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              display="default"
-              onDateChange={(date) => onTimePickerChange(date)}
-            />
-          </Item>
-          <Item>
-            <Icon active name='home' />
-            <Label>Notes:</Label>
+        <List>
+          <Separator bordered>
+            <Text>Times</Text>
+          </Separator>
+          <ListItem>
+            <Left>
+              <Label>Entry Time</Label>
+            </Left>
+            <Right>
+              <DatePicker
+                customStyles={{
+                  dateInput: {
+                    borderWidth: 0,
+                  },
+                }}
+                date={enterTime}
+                mode="time"
+                is24Hour={true}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                display="default"
+                onDateChange={setEnterTime}
+              />
+            </Right>
+          </ListItem>
+          <ListItem>
+            <Left>
+              <Label>Exit Time</Label>
+            </Left>
+            <Right>
+              <DatePicker
+                customStyles={{
+                  dateInput: {
+                    borderWidth: 0,
+                  },
+                }}
+                date={exitTime}
+                mode="time"
+                is24Hour={true}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                display="default"
+                onDateChange={setExitTime}
+              />
+            </Right>
+          </ListItem>
+          <Separator bordered>
+            <Text>Notes</Text>
+          </Separator>
+          <ListItem>
+            <Left>
+              <Text>Report Code</Text>
+            </Left>
+            <Right>
+              <Picker
+                note
+                mode="dropdown"
+                iosHeader="Report Codes"
+                style={{width: undefined}}
+                selectedValue={reportCode}
+                onValueChange={setReportCode}
+                iosIcon={<Icon ios="ios-arrow-down" />}>
+                {reportCodes.map((el) => (
+                  <Picker.Item label={el.Description} value={el.Code} />
+                ))}
+              </Picker>
+            </Right>
+          </ListItem>
+          <ListItem>
+            <Icon ios="ios-create" style={{color: 'green'}} />
+            <Label>Notes</Label>
             <TextInput style={styles.panelSubtitle}>{item.notes}</TextInput>
-          </Item>
-          <Button onPress={() => navigation.goBack()} title="Update" />
-        </Form>
+          </ListItem>
+        </List>
+        <Button onPress={() => navigation.goBack()} title="Update" />
       </Content>
     </Container>
   );
