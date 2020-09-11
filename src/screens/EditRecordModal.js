@@ -115,8 +115,12 @@ const EditRecordModal = ({route, navigation}) => {
                 selectedValue={reportCode}
                 onValueChange={setReportCode}
                 iosIcon={<Icon ios="ios-arrow-down" />}>
-                {reportCodes.map((el) => (
-                  <Picker.Item label={el.Description} value={el.Code} />
+                {reportCodes.map((el, index) => (
+                  <Picker.Item
+                    label={el.Description}
+                    value={el.Code}
+                    key={index}
+                  />
                 ))}
               </Picker>
             </Right>
